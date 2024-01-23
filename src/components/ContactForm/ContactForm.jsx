@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { addContact } from '../../redux/contactsSlice';
+import { selectContacts } from '../../redux/selector';
 
 import { v4 as uuidv4 } from 'uuid';
 import css from './ContactForm.module.css';
 
 export const ContactForm = () => {
-  const contacts = useSelector(store => store.contactsReducer.contacts);
+  const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
 
   const handleFormSubmit = evt => {

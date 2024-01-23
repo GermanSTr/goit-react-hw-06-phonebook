@@ -1,6 +1,15 @@
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../../redux/contactsSlice';
+
 import css from './ContactListItem.module.css';
 
-const ContactListItem = ({ name, number, handleDeleteContacts, id }) => {
+const ContactListItem = ({ name, number, id }) => {
+  const dispatch = useDispatch();
+
+  const handleDeleteContacts = profileId => {
+    dispatch(deleteContact(profileId));
+  };
+
   return (
     <li className={css.itemLi}>
       {name}: {number}
