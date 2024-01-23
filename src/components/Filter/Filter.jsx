@@ -1,6 +1,9 @@
+import { useSelector } from 'react-redux';
 import css from './Filter.module.css';
 
-const Filter = ({ handleChangeFilter, filter }) => {
+const Filter = ({ handleChangeFilter }) => {
+  const filter = useSelector(store => store.contactsReducer.filter);
+
   return (
     <div className={css.filter}>
       <p>Find contacts by name</p>

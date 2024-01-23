@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import {
+  addContact,
+  changeFilter,
+  deleteContact,
+} from '../redux/contactsSlice';
+
 import { v4 as uuidv4 } from 'uuid';
 import { ContactList } from './ContactList/ContactList';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem('contacts')) ?? []
-  );
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(store => store.contactsReducer.contacts);
+  const state = useSelector(store => store.contactsReducer.filter);
+  const dispatch = useDispatch();
+  // const [contacts, setContacts] = useState(
+  //   JSON.parse(localStorage.getItem('contacts')) ?? []
+  // );
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const handleAddName = formData => {
     const hasDuplicates = contacts.some(
@@ -22,21 +30,21 @@ export const App = () => {
       alert(`${formData.name} is already in contacts`);
       return;
     }
-    setContacts(prevState => [...prevState, { ...formData, id: uuidv4() }]);
+    const contactData = { ...formData, id: uuidv4() };
+    dispatch(addContact(contactData));
   };
 
   const handleChangeFilter = evt => {
-    setFilter(evt.target.value);
+    const value = evt.target.value;
+    dispatch(changeFilter(value));
   };
 
   const handleDeleteContacts = profileId => {
-    setContacts(prevState =>
-      prevState.filter(contact => contact.id !== profileId)
-    );
+    dispatch(deleteContact(profileId));
   };
 
   const filterProfiles = contacts.filter(profile =>
-    profile.name.toLowerCase().includes(filter.trim().toLowerCase())
+    profile.name.toLowerCase().includes(state.trim().toLowerCase())
   );
   return (
     <div>
@@ -44,7 +52,7 @@ export const App = () => {
       <ContactForm handleAddName={handleAddName} />
 
       <h2>Contacts</h2>
-      <Filter handleChangeFilter={handleChangeFilter} filter={filter} />
+      <Filter handleChangeFilter={handleChangeFilter} />
       <ContactList
         contacts={filterProfiles}
         handleDeleteContacts={handleDeleteContacts}
